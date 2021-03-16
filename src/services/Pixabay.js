@@ -1,9 +1,9 @@
 import axios from 'axios';
 import PropTypes from 'prop-types';
 
-axios.defaults.baseURL = `https:pixabay.com/api/`;
+axios.defaults.baseURL = 'https://pixabay.com/api/';
 
-let apiKey = `19822341-38023a333dc0ee1aeedcaef47`;
+const apiKey = '19822341-38023a333dc0ee1aeedcaef47';
 const perPage = 12;
 
 const fetchImg = ({ query = '', page = 1 }) => {
