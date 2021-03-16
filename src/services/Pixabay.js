@@ -1,16 +1,20 @@
 import axios from 'axios';
+import PropTypes from 'prop-types';
 
 axios.defaults.baseURL = `https:pixabay.com/api/`;
 
-let ApiKey = `19822341-38023a333dc0ee1aeedcaef47`;
+let apiKey = `19822341-38023a333dc0ee1aeedcaef47`;
 const perPage = 12;
 
-const fetchImg = ({ query = '', currentPage = 1 }) => {
-  const url = `?q=${query}&page=${currentPage}&key=${ApiKey}&image_type=photo&orientation=horizontal&per_page=${perPage}`;
+const fetchImg = ({ query = '', page = 1 }) => {
+  const url = `?q=${query}&page=${page}&key=${apiKey}&image_type=photo&orientation=horizontal&per_page=${perPage}`;
 
-  return axios.get(url).then(({ data }) => {
-    return data.hits;
-  });
+  return axios.get(url).then(({ data }) => data.hits);
+};
+
+fetchImg.propTypes = {
+  query: PropTypes.string.isRequired,
+  page: PropTypes.number.isRequired,
 };
 
 export default fetchImg;

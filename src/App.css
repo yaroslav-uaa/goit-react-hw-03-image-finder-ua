@@ -205,3 +205,12 @@ img {
 .Button:focus {
   background-color: #303f9f;
 }
+
+.Container {
+  margin: 0 auto;
+  text-align: center;
+}
+
+.Loader {
+  margin: 0, auto;
+}

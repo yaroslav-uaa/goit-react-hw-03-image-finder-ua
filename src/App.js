@@ -1,59 +1,58 @@
 import React, { Component } from 'react';
-import Searchbar from './components/Searchbar';
+import Container from './components/Container';
+import SearchBar from './components/SearchBar';
 import ImageGallery from './components/ImageGallery';
 import Button from './components/Button';
 import Loader from 'react-loader-spinner';
-import Modal from './components/Modal/Modal';
+import Modal from './components/Modal';
 import fetchImg from './services/Pixabay';
 import './App.css';
+import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 
 class App extends Component {
   state = {
-    search: '',
+    query: '',
     page: 1,
     gallery: [],
     loading: false,
     showModal: false,
-    currentImgURL: '',
+    largeImageURL: '',
+    alt: null,
     error: null,
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const { search } = this.state;
-    if (prevState.search !== search) {
+    const { query } = this.state;
+    if (prevState.query !== query) {
       this.getImgs();
     }
   }
 
-  handleSubmit = newSearch => {
+  handleSubmit = search => {
+    if (this.state.query === search) {
+      return;
+    }
+
     this.setState({
-      gallery: [],
-      search: newSearch,
+      query: search,
       page: 1,
-      currentImgURL: '',
-      showModal: false,
-      error: null,
+      gallery: [],
     });
   };
 
   getImgs = () => {
-    const { search, page } = this.state;
-
-    const query = {
-      search,
-      page,
-    };
+    const { query, page } = this.state;
 
     this.setState({ loading: true });
 
     setTimeout(() => {
-      fetchImg(query)
-        .then(response => {
-          if (response.length === 0) {
+      fetchImg({ query, page })
+        .then(gallery => {
+          if (gallery.length === 0) {
             alert(`Sorry! ${query} is not found`);
           }
           this.setState(prevState => ({
-            gallery: [...prevState.gallery, ...response.data.hits],
+            gallery: [...prevState.gallery, ...gallery],
             loading: false,
             page: prevState.page + 1,
           }));
@@ -70,29 +69,52 @@ class App extends Component {
     }, 200);
   };
 
-  getLargeImg = img => {
-    this.setState({ currentImgURL: img.largeImgURL });
-    this.toggleModal();
-  };
-
   toggleModal = () => {
     this.setState(({ showModal }) => ({
       showModal: !showModal,
     }));
   };
 
+  setImgInfo = ({ largeImageURL, tags }) => {
+    this.setState({ largeImageURL, tags });
+  };
+
   render() {
-    const { loading, gallery, showModal, currentImgURL } = this.state;
+    const {
+      gallery,
+      showModal,
+      largeImageURL,
+      alt,
+      loading,
+      error,
+    } = this.state;
     return (
-      <>
-        <Searchbar onSubmit={this.handleSubmit} />
-        <ImageGallery getLargeImg={this.getLargeImg} gallery={gallery} />
-        {loading && <Loader />}
-        {gallery.length > 0 && !loading && <Button getImg={this.getImgs} />}
-        {showModal && (
-          <Modal largeImgURL={currentImgURL} onClose={this.toggleModal} />
+      <Container>
+        <SearchBar onSubmit={this.handleSubmit} />
+        {error && <p>Whoops, something went wrong.</p>}
+        {loading && (
+          <Loader
+            className="Loader"
+            type="TailSpin"
+            color="#00BFFF"
+            height={80}
+            width={80}
+            timeout={2000}
+          />
         )}
-      </>
+        <ImageGallery
+          gallery={gallery}
+          onOpenModal={this.toggleModal}
+          onSetImgInfo={this.setImgInfo}
+        />
+        {gallery.length > 0 && !loading && <Button onLoadMore={this.getImgs} />}
+
+        {showModal && (
+          <Modal onClose={this.toggleModal}>
+            <img src={largeImageURL} alt={alt} />
+          </Modal>
+        )}
+      </Container>
     );
   }
 }
