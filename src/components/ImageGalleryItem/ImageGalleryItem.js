@@ -5,7 +5,6 @@ const ImageGalleryItem = ({
   largeImageURL,
   tags = '',
   onSetImgInfo,
-  onOpenModal,
 }) => {
   return (
     <li className="ImageGalleryItem">
@@ -15,7 +14,6 @@ const ImageGalleryItem = ({
         className="ImageGalleryItemImage"
         onClick={() => {
           onSetImgInfo({ largeImageURL, tags });
-          onOpenModal();
         }}
       />
     </li>
@@ -27,7 +25,6 @@ ImageGalleryItem.propTypes = {
   largeImageURL: PropTypes.string.isRequired,
   tags: PropTypes.string,
   onSetImgInfo: PropTypes.func.isRequired,
-  onOpenModal: PropTypes.func.isRequired,
 };
 
 export default ImageGalleryItem;

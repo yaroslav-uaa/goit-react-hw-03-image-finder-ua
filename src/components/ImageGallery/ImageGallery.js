@@ -1,7 +1,7 @@
 import ImageGalleryItem from '../ImageGalleryItem';
 import PropTypes from 'prop-types';
 
-const ImageGallery = ({ gallery, onSetImgInfo, onOpenModal }) => (
+const ImageGallery = ({ gallery, onSetImgInfo }) => (
   <ul className="ImageGallery">
     {gallery.map(({ webformatURL, largeImageURL, tags }, idx) => (
       <ImageGalleryItem
@@ -10,7 +10,6 @@ const ImageGallery = ({ gallery, onSetImgInfo, onOpenModal }) => (
         largeImageURL={largeImageURL}
         tags={tags}
         onSetImgInfo={onSetImgInfo}
-        onOpenModal={onOpenModal}
       />
     ))}
   </ul>
@@ -18,7 +17,6 @@ const ImageGallery = ({ gallery, onSetImgInfo, onOpenModal }) => (
 
 ImageGallery.propTypes = {
   gallery: PropTypes.array.isRequired,
-  onOpenModal: PropTypes.func.isRequired,
   onSetImgInfo: PropTypes.func.isRequired,
 };
 
