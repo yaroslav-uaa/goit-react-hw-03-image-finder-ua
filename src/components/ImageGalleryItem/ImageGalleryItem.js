@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import i from './ImageGalleryItem.module.css';
 
 const ImageGalleryItem = ({
   webformatURL,
@@ -7,11 +8,11 @@ const ImageGalleryItem = ({
   onSetImgInfo,
 }) => {
   return (
-    <li className="ImageGalleryItem">
+    <li className={i.ImageGalleryItem}>
       <img
         src={webformatURL}
         alt={tags}
-        className="ImageGalleryItemImage"
+        className={i.ImageGalleryItemImage}
         onClick={() => {
           onSetImgInfo({ largeImageURL, tags });
         }}

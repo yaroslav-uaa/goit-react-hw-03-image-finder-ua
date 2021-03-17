@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import Container from './components/Container';
-import fetchImg from './services/Pixabay';
 import SearchBar from './components/SearchBar';
 import ImageGallery from './components/ImageGallery';
 import Button from './components/Button';
 import Loader from 'react-loader-spinner';
 import Modal from './components/Modal';
+import fetchImg from './services/Pixabay';
 import './App.css';
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 
 class App extends Component {
   state = {
-    query: 'ukraine',
+    query: '',
     page: 1,
     gallery: [],
     loading: false,
@@ -20,9 +20,6 @@ class App extends Component {
     alt: null,
     error: null,
   };
-  componentDidMount() {
-    this.getImgs();
-  }
 
   componentDidUpdate(prevProps, prevState) {
     const { query } = this.state;
@@ -52,24 +49,26 @@ class App extends Component {
       .then(gallery => {
         if (gallery.length === 0) {
           alert(`Sorry! ${query} is not found`);
-          return;
         }
         this.setState(prevState => ({
           gallery: [...prevState.gallery, ...gallery],
           page: prevState.page + 1,
-          error: false,
         }));
-        if (page !== 0) {
-          window.scrollTo({
-            top: document.documentElement.scrollHeight,
-            behavior: 'smooth',
-          });
-        }
+        this.scrollPageDown();
       })
       .catch(error => this.setState({ error }))
       .finally(() => {
         this.setState({ loading: false });
       });
+  };
+
+  scrollPageDown = () => {
+    // setTimeout(() => {
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: 'smooth',
+    });
+    // }, 600);
   };
 
   toggleModal = () => {
@@ -103,7 +102,7 @@ class App extends Component {
             color="#00BFFF"
             height={80}
             width={80}
-            timeout={3000}
+            timeout={2000}
           />
         )}
         <ImageGallery gallery={gallery} onSetImgInfo={this.setImgInfo} />
@@ -111,7 +110,7 @@ class App extends Component {
 
         {showModal && (
           <Modal onClose={this.toggleModal}>
-            <img src={largeImageURL} alt={alt} />
+            <img src={largeImageURL} alt={alt} width="800" height="600" />
           </Modal>
         )}
       </Container>
